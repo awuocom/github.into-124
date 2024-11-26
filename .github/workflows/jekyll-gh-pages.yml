@@ -1,0 +1,51 @@
+# 构建 Jekyll 站点并将其部署到 GitHub Pages 的示例工作流程
+名称： 部署 Jekyll 并预装 GitHub Pages 依赖项
+
+在：
+  #针对默认分支的个体上运动
+  推：推：推：推：
+    分支：[ “主要” ]
+
+  # 允许您从“操作”选项卡手动运行此工作流程
+  工作流程_调度：
+
+# 设置 GITHUB_TOKEN 的权限以允许部署到 GitHub Pages
+权限：
+  内容：阅读
+  页数：写
+  id-token ：写入
+
+# 只允许一个队列运行，队列跳过的运行和最新队列的运行之间的队列运行。
+#但是，不要取消发射的运行，因为我们希望完成这些生产部署。
+系数：
+  组：“页面”
+  取消进行中：false
+
+职位：
+  # 构建作业
+  建造者：
+    运行： ubuntu-latest
+    步骤：
+      -名称：结账
+        使用： actions/checkout@v4
+      -名称：设置页面
+        使用： actions/configure-pages@v5
+      -名称：使用 Jekyll 构建
+        使用： actions/jekyll-build-pages@v1
+        和：
+          来源：。/
+          目的地：目的地：./_site
+      - name:       - 名称：上传神器
+        uses:         使用：actions/upload-pages-artifact@v3
+
+  # 部署作业# Deployment job
+  deploy:
+    environment:
+      name:       名称：github页面
+      url:       网址：${{steps.deployment.outputs.page_url}}{{ steps.deployment.outputs.page_url }}
+    runs-on:     运行：ubuntu-latest
+    needs:     需求：构建
+    steps:
+      - name:       - 名称：部署到 GitHub Pages
+        id:         id：部署
+        uses:         使用：actions/deploy-pages@v4
